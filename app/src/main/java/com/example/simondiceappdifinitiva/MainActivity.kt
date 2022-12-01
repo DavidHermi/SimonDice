@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val toast2 = Toast.makeText(applicationContext,"Inicio", Toast.LENGTH_SHORT)
 
 
-        val ModeloJuego by viewModels<liveData>()
+        val ModeloJuego by viewModels<VistaModelo>()
 
         ModeloJuego.gameState.observe(this, Observer{
                 gs -> state = gs
@@ -69,16 +70,4 @@ class MainActivity : AppCompatActivity() {
             ModeloJuego.addUserSec(4)
         }
     }
-
-
-
-
-
-
-
-
-
-
-
     }
-}
