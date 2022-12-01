@@ -70,4 +70,15 @@ class MainActivity : AppCompatActivity() {
             ModeloJuego.addUserSec(4)
         }
     }
+
+
+
+
+
+
+
+
+
+
+
     }
