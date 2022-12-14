@@ -3,6 +3,7 @@ package com.example.simondiceappdifinitiva
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
@@ -68,6 +69,29 @@ class MainActivity : AppCompatActivity() {
         button_blue.setOnClickListener{
             ModeloJuego.addUserSec(4)
         }
+
+
+        ModeloJuego.liveRonda.observe(
+            this,
+            Observer (
+                fun (ronda:Int) {
+                    val obronda : TextView = findViewById(R.id.textRound)
+                    if (ronda==1)  button_start.isClickable = true
+                    obronda.setText("Ronda: $ronda")
+                }
+                    )
+        )
+
+        ModeloJuego.liveRecord.observe(
+            this,
+            Observer (
+                fun (record:Int) {
+                    val obronda : TextView = findViewById(R.id.textRound)
+                    obronda.setText("Record: $record")
+                }
+            )
+        )
+
     }
 
 
