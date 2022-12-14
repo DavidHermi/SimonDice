@@ -13,6 +13,9 @@ import kotlin.random.Random
 
 class VistaModelo (application: Application) : AndroidViewModel(application) {
 
+    /**
+     * variables
+     */
     private var ronda = 1     //número de ronda
     var liveRonda = MutableLiveData<Int>()
     private var record = 1 //numero record
@@ -26,7 +29,10 @@ class VistaModelo (application: Application) : AndroidViewModel(application) {
 
     var room:AppDatabase? = null
 
-
+    /**
+     * Initi donde se ponen las diferencias secuencias que se van hacer,
+     * y todo lo relacionado con el sqlite
+     */
 
     init {
         secuenciaU.value = mutableListOf<Int>()
@@ -52,17 +58,20 @@ class VistaModelo (application: Application) : AndroidViewModel(application) {
         roomCorrutine.start()
     }
 
-
+    /**
+     * inicia el juego
+     */
         fun init_game() {
 
         gameState.value = false;
         reset()
         addToSecu()
-        liveRonda.value = ronda
-        ronda++
-        liveRonda.value = ronda
+
     }
 
+    /**
+     * Añade a la funcion un color aleatorio con un random
+     */
     private fun addToSecu() {
         val numb = Random.nextInt(4) + 1
         //val numb = 1;
@@ -70,13 +79,18 @@ class VistaModelo (application: Application) : AndroidViewModel(application) {
         secuenciaJ.postValue(secuenciaJ.value)
     }
 
+    /**
+     * Comprueba la secuencia
+     */
     fun checkSec(): Boolean {
         var ret = false
         if (secuenciaJ.value == secuenciaU.value && gameState.value == false) {
             addToSecu()
             secuenciaU.value?.clear()
             ret = true;
-
+            ronda++
+            liveRonda.value = ronda
+            actualizarRecord()
         } else {
             gameState.value = true;
         }
@@ -86,6 +100,10 @@ class VistaModelo (application: Application) : AndroidViewModel(application) {
 
     }
 
+
+    /**
+     * Funcion para actualizar el record que se llama en la funcion de chequear la secuencia
+     */
     fun actualizarRecord() {
         if (record < ronda) {
             liveRecord.value = liveRonda.value
@@ -97,7 +115,9 @@ class VistaModelo (application: Application) : AndroidViewModel(application) {
         updateCorrutine.start()
     }
 
-
+    /**
+     * Funcion para reiniciar la secuencia
+     */
     private fun reset() {
         secuenciaJ.value?.clear()
         secuenciaU.value?.clear()
@@ -115,7 +135,9 @@ class VistaModelo (application: Application) : AndroidViewModel(application) {
     fun getSec(): MutableList<Int> {
         return secuenciaJ.value!!
     }
-
+    /**
+     * Funcion que enseña la secuencia
+     */
     fun showSec(listButton: List<Button>) {
         CoroutineScope(Dispatchers.Main).launch {
             for (colors in secuenciaJ.value!!) {

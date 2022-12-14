@@ -43,6 +43,12 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+
+        /**
+         * Botones con sus funciones y observers
+         */
+
+
         ModeloJuego.secuenciaJ.observe(this, Observer{
             ModeloJuego.showSec(Btnscolor)
         })
