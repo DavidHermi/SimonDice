@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
         val toast = Toast.makeText(applicationContext,"Juego terminado", Toast.LENGTH_SHORT)
         val toast2 = Toast.makeText(applicationContext,"Inicio", Toast.LENGTH_SHORT)
 
-
         val ModeloJuego by viewModels<VistaModelo>()
 
         ModeloJuego.gameState.observe(this, Observer{

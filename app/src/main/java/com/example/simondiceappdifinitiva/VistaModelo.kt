@@ -11,6 +11,10 @@ import kotlin.random.Random
 
 class VistaModelo  : ViewModel() {
 
+    private var ronda = 1     //número de ronda
+    var liveRonda = MutableLiveData<Int>()
+    private var record = 1 //numero record
+    var liveRecord = MutableLiveData<Int>()
     val secuenciaJ = MutableLiveData<MutableList<Int>>()
     val secuenciaU = MutableLiveData<MutableList<Int>>()
     val gameState = MutableLiveData<Boolean>()
@@ -22,6 +26,7 @@ class VistaModelo  : ViewModel() {
     }
 
     fun init_game() {
+
         gameState.value = false;
         reset()
         addToSecu()
@@ -40,10 +45,14 @@ class VistaModelo  : ViewModel() {
             addToSecu()
             secuenciaU.value?.clear()
             ret = true;
+
         } else {
             gameState.value = true;
         }
         return ret;
+
+
+
     }
 
     private fun reset() {
