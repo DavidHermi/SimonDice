@@ -9,18 +9,11 @@ import androidx.room.Update
 @Dao
 interface DatosDAO {
 
-    @Query("SELECT record FROM Record WHERE id= 1")
-    suspend fun getRecord(): Int
+    @Query("SELECT MAX (record)  FROM Record ")
+    fun getRecord(): Int
 
-    @Query("INSERT INTO Record (record) VALUES (0)")
-    suspend fun crearRecord()
-
-    @Update
-    suspend fun update(entities: Entities)
-
-
-    @Delete
-    fun delete(user: Entities)
+    @Query("INSERT INTO Record (record) VALUES (:record)")
+     fun guardarRecord(record:Int)
 
 }
 

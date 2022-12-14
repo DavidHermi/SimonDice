@@ -38,25 +38,13 @@ class VistaModelo (application: Application) : AndroidViewModel(application) {
         secuenciaU.value = mutableListOf<Int>()
         secuenciaJ.value = mutableListOf<Int>()
         gameState.value = true
-        room = Room
-            .databaseBuilder(
-                context,
-                AppDatabase::class.java, "Record"
-            )
-            .build()
-        //recogerRecord()
 
-        val roomCorrutine = GlobalScope.launch(Dispatchers.Main) {
-            try {
-                liveRecord.value = room!!.datosDao().getRecord()
-                Log.d("recSQLite", liveRecord.value.toString())
-            } catch (ex: java.lang.NullPointerException) {
-                room!!.datosDao().crearRecord()
-                liveRecord.value = room!!.datosDao().getRecord()
-            }
-        }
-        roomCorrutine.start()
+
     }
+
+    val daoDatos = AppDatabase.getDatabase(context).DatosDAO()
+
+
 
     /**
      * inicia el juego
@@ -110,7 +98,7 @@ class VistaModelo (application: Application) : AndroidViewModel(application) {
         }
         val updateCorrutine = GlobalScope.launch(Dispatchers.Main) {
 
-            room!!.datosDao().update(Entities(1,liveRecord.value))
+            daoDatos.guardarRecord(record)
         }
         updateCorrutine.start()
     }
