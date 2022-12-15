@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
             this,
             Observer (
                 fun (record:Int) {
-                    val obronda : TextView = findViewById(R.id.textRound)
+                    val obronda : TextView = findViewById(R.id.textRecord)
                     obronda.setText("Record: $record")
                 }
             )

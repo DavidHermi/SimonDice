@@ -1,13 +1,19 @@
 package com.example.simondiceappdifinitiva
 
 
-import Entities
 import android.app.Application
 import android.util.Log
 import android.widget.Button
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import kotlin.random.Random
 
@@ -27,7 +33,7 @@ class VistaModelo (application: Application) : AndroidViewModel(application) {
     val context = getApplication<Application>().applicationContext
 
 
-    var room:AppDatabase? = null
+    private lateinit var fireBaseR: DatabaseReference
 
     /**
      * Initi donde se ponen las diferencias secuencias que se van hacer,
@@ -38,24 +44,24 @@ class VistaModelo (application: Application) : AndroidViewModel(application) {
         secuenciaU.value = mutableListOf<Int>()
         secuenciaJ.value = mutableListOf<Int>()
         gameState.value = true
-        room = Room
-            .databaseBuilder(
-                context,
-                AppDatabase::class.java, "Record"
-            )
-            .build()
-        //recogerRecord()
+        liveRonda.value = ronda
+        liveRecord.value = record
+        fireBaseR =
+            Firebase.database("https://simondice-65f90-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("record")
+        //Defino el listener del record
+        val recordListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                liveRecord.value = dataSnapshot.getValue<Int>()
+                Log.d("RecFirebase", liveRecord.value.toString())
+            }
 
-        val roomCorrutine = GlobalScope.launch(Dispatchers.Main) {
-            try {
-                liveRecord.value = room!!.datosDao().getRecord()
-                Log.d("recSQLite", liveRecord.value.toString())
-            } catch (ex: java.lang.NullPointerException) {
-                room!!.datosDao().crearRecord()
-                liveRecord.value = room!!.datosDao().getRecord()
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("ReaLTime", "recordListener:OnCancelled", error.toException())
             }
         }
-        roomCorrutine.start()
+        //Añado el listener a la BD
+        fireBaseR.addValueEventListener(recordListener)
     }
 
     /**
@@ -92,6 +98,7 @@ class VistaModelo (application: Application) : AndroidViewModel(application) {
             liveRonda.value = ronda
             actualizarRecord()
         } else {
+            ronda=0
             gameState.value = true;
         }
         return ret;
@@ -107,12 +114,9 @@ class VistaModelo (application: Application) : AndroidViewModel(application) {
     fun actualizarRecord() {
         if (record < ronda) {
             liveRecord.value = liveRonda.value
+            fireBaseR.setValue(liveRecord.value)
+            Log.d("FireAct", liveRecord.toString())
         }
-        val updateCorrutine = GlobalScope.launch(Dispatchers.Main) {
-
-            room!!.datosDao().update(Entities(1,liveRecord.value))
-        }
-        updateCorrutine.start()
     }
 
     /**
